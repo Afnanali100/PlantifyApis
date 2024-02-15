@@ -1,0 +1,15 @@
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\obj\Debug\net6.0\PlantifyApp.Repository.csproj.AssemblyReference.cache
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\obj\Debug\net6.0\PlantifyApp.Repository.GeneratedMSBuildEditorConfig.editorconfig
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\obj\Debug\net6.0\PlantifyApp.Repository.AssemblyInfoInputs.cache
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\obj\Debug\net6.0\PlantifyApp.Repository.AssemblyInfo.cs
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\obj\Debug\net6.0\PlantifyApp.Repository.csproj.CoreCompileInputs.cache
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\bin\Debug\net6.0\PlantifyApp.Repository.deps.json
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\bin\Debug\net6.0\PlantifyApp.Repository.dll
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\bin\Debug\net6.0\PlantifyApp.Repository.pdb
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\obj\Debug\net6.0\PlantifyApp.Repository.dll
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\obj\Debug\net6.0\refint\PlantifyApp.Repository.dll
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\obj\Debug\net6.0\PlantifyApp.Repository.pdb
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\obj\Debug\net6.0\ref\PlantifyApp.Repository.dll
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\bin\Debug\net6.0\PlantifyApp.Core.dll
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\bin\Debug\net6.0\PlantifyApp.Core.pdb
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Repository\obj\Debug\net6.0\PlantifyApp.Repository.csproj.CopyComplete

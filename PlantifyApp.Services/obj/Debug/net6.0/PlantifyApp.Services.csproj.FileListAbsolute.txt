@@ -1,0 +1,15 @@
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\obj\Debug\net6.0\PlantifyApp.Services.csproj.AssemblyReference.cache
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\obj\Debug\net6.0\PlantifyApp.Services.GeneratedMSBuildEditorConfig.editorconfig
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\obj\Debug\net6.0\PlantifyApp.Services.AssemblyInfoInputs.cache
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\obj\Debug\net6.0\PlantifyApp.Services.AssemblyInfo.cs
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\obj\Debug\net6.0\PlantifyApp.Services.csproj.CoreCompileInputs.cache
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\bin\Debug\net6.0\PlantifyApp.Services.deps.json
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\bin\Debug\net6.0\PlantifyApp.Services.dll
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\bin\Debug\net6.0\PlantifyApp.Services.pdb
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\bin\Debug\net6.0\PlantifyApp.Core.dll
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\bin\Debug\net6.0\PlantifyApp.Core.pdb
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\obj\Debug\net6.0\PlantifyApp.Services.csproj.CopyComplete
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\obj\Debug\net6.0\PlantifyApp.Services.dll
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\obj\Debug\net6.0\refint\PlantifyApp.Services.dll
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\obj\Debug\net6.0\PlantifyApp.Services.pdb
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Services\obj\Debug\net6.0\ref\PlantifyApp.Services.dll

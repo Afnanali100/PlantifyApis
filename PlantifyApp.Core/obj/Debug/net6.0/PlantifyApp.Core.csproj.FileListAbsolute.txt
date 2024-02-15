@@ -1,0 +1,12 @@
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Core\bin\Debug\net6.0\PlantifyApp.Core.deps.json
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Core\bin\Debug\net6.0\PlantifyApp.Core.dll
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Core\bin\Debug\net6.0\PlantifyApp.Core.pdb
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Core\obj\Debug\net6.0\PlantifyApp.Core.csproj.AssemblyReference.cache
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Core\obj\Debug\net6.0\PlantifyApp.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Core\obj\Debug\net6.0\PlantifyApp.Core.AssemblyInfoInputs.cache
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Core\obj\Debug\net6.0\PlantifyApp.Core.AssemblyInfo.cs
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Core\obj\Debug\net6.0\PlantifyApp.Core.csproj.CoreCompileInputs.cache
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Core\obj\Debug\net6.0\PlantifyApp.Core.dll
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Core\obj\Debug\net6.0\refint\PlantifyApp.Core.dll
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Core\obj\Debug\net6.0\PlantifyApp.Core.pdb
+D:\Graduation Project\Project implementation\PlantifyApplication\PlantifyApp.Core\obj\Debug\net6.0\ref\PlantifyApp.Core.dll
