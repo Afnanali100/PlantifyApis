@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Gd56vZKx2/csh2cBzpuJBLhplbpyd92VHNgaLEQQvT0n7p7/XnOXxnM9ElVWfIsEHh2PZWHFhtEkCKQXH8KaSQ==",
+  "dgSpecHash": "Ft+tq1YWIvDn34gNG4C8fnn/+wTjcc9C48DfevEw14akwvM8evZQiHjBNsIBxcW/xs6SqT23sVlQZgYrvTm/HQ==",
   "success": true,
-  "projectFilePath": "D:\\Graduation Project\\Project implementation\\PlantifyApplication\\PlantifyApp.Core\\PlantifyApp.Core.csproj",
+  "projectFilePath": "D:\\Graduation Project\\Backend\\PlantifyApis\\PlantifyApp.Core\\PlantifyApp.Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\dell\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.27\\microsoft.aspnetcore.authentication.jwtbearer.6.0.27.nupkg.sha512",
     "C:\\Users\\dell\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\6.0.27\\microsoft.aspnetcore.cryptography.internal.6.0.27.nupkg.sha512",
@@ -40,7 +40,10 @@
     "C:\\Users\\dell\\.nuget\\packages\\system.security.cryptography.cng\\4.5.0\\system.security.cryptography.cng.4.5.0.nupkg.sha512",
     "C:\\Users\\dell\\.nuget\\packages\\system.text.encoding\\4.3.0\\system.text.encoding.4.3.0.nupkg.sha512",
     "C:\\Users\\dell\\.nuget\\packages\\system.text.encodings.web\\4.7.2\\system.text.encodings.web.4.7.2.nupkg.sha512",
-    "C:\\Users\\dell\\.nuget\\packages\\system.text.json\\4.7.2\\system.text.json.4.7.2.nupkg.sha512"
+    "C:\\Users\\dell\\.nuget\\packages\\system.text.json\\4.7.2\\system.text.json.4.7.2.nupkg.sha512",
+    "C:\\Users\\dell\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.29\\microsoft.windowsdesktop.app.ref.6.0.29.nupkg.sha512",
+    "C:\\Users\\dell\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.29\\microsoft.netcore.app.ref.6.0.29.nupkg.sha512",
+    "C:\\Users\\dell\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.29\\microsoft.aspnetcore.app.ref.6.0.29.nupkg.sha512"
   ],
   "logs": []
 }
