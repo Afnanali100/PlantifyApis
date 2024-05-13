@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using PlantifyApp.Apis.Extension;
 using PlantifyApp.Apis.Middlewares;
 using PlantifyApp.Repository.Identity;
@@ -74,7 +75,12 @@ namespace PlantifyApp
 
             app.UseAuthorization();
             app.UseAuthentication();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+         Path.Combine(Directory.GetCurrentDirectory(), "Assest", "User_images")),
+                RequestPath = "/Assest/User_images"
+            });
 
             app.MapControllers();
 
