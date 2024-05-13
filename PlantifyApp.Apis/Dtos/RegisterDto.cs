@@ -19,6 +19,11 @@ namespace PlantifyApp.Apis.Dtos
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        [Required(ErrorMessage = " User Type is required")]
+        [DisplayName("Type")]
+        public string Role { get; set; }
+
+
 
     }
 }
