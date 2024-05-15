@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "epCiPSplZJx12LK/kPCtcRmQ27qfK04nv95n8S4lw7Y=",
+  "Source": "PlantifyApp.Apis",
+  "BasePath": "_content/PlantifyApp.Apis",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

@@ -1,0 +1,16 @@
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\bin\Release\net6.0\PlantifyApp.Services.deps.json
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\bin\Release\net6.0\PlantifyApp.Services.dll
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\bin\Release\net6.0\PlantifyApp.Services.pdb
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\bin\Release\net6.0\PlantifyApp.Core.dll
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\bin\Release\net6.0\PlantifyApp.Core.pdb
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\obj\Release\net6.0\PlantifyApp.Services.csproj.AssemblyReference.cache
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\obj\Release\net6.0\PlantifyApp.Services.GeneratedMSBuildEditorConfig.editorconfig
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\obj\Release\net6.0\PlantifyApp.Services.AssemblyInfoInputs.cache
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\obj\Release\net6.0\PlantifyApp.Services.AssemblyInfo.cs
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\obj\Release\net6.0\PlantifyApp.Services.csproj.CoreCompileInputs.cache
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\obj\Release\net6.0\PlantifyApp.Services.sourcelink.json
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\obj\Release\net6.0\Plantify.C5501164.Up2Date
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\obj\Release\net6.0\PlantifyApp.Services.dll
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\obj\Release\net6.0\refint\PlantifyApp.Services.dll
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\obj\Release\net6.0\PlantifyApp.Services.pdb
+D:\Graduation Project\Backend\PlantifyApis\PlantifyApp.Services\obj\Release\net6.0\ref\PlantifyApp.Services.dll

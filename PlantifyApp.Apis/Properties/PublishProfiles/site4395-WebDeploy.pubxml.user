@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAy0UWV/SCnkmA/FSuFhug1gAAAAACAAAAAAAQZgAAAAEAACAAAACkYJtzKPwvpUlroYqbAX/1wwKUVw1Hb5Cxxl0ax8PT5gAAAAAOgAAAAAIAACAAAACu7yjJZyp2ZoeYNh1zL4lR+QNxWRf75QBrkofcE2JfTyAAAACz1ceJaOh/MDAGNSbKBjgT7I81g0y7bbriNvUSBMyjtUAAAADJMYiNCHONvISX6Y+AMUjhIx+y62pNLdn4+eN6JqfA8j4EE3o43Wto7z+xD4WJFvL2lUq/ZRI4krO7PCW3NN1L</EncryptedPassword>
+    <History>True|2024-05-15T06:24:06.0292645Z;True|2024-05-15T09:17:34.2203094+03:00;True|2024-05-15T09:14:59.1120881+03:00;False|2024-05-15T09:14:21.0095275+03:00;True|2024-05-15T09:13:10.6285819+03:00;True|2024-05-15T09:09:53.8784380+03:00;True|2024-05-15T07:35:46.5966406+03:00;True|2024-05-15T07:34:49.9606176+03:00;True|2024-05-15T07:31:43.4194782+03:00;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DefaultConnection">
+      <Value>Server=sql.bsite.net\MSSQL2016%3bDatabase=plantifyapp_Users%3bUser Id=plantifyapp_Users%3bPassword=P%40asswo0rd%3bMultipleActiveResultSets=True%3b</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

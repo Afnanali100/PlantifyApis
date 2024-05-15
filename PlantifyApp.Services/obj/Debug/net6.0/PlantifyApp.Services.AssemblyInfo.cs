@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PlantifyApp.Services")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d3fb5a7d97f804fce078c637b89246695d7766e6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+420a495036f15a508d51886511d90cd6e12e7e60")]
 [assembly: System.Reflection.AssemblyProductAttribute("PlantifyApp.Services")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PlantifyApp.Services")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
