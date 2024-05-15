@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using PlantifyApp.Apis.Extension;
 using PlantifyApp.Apis.Middlewares;
 using PlantifyApp.Repository.Identity;
@@ -21,6 +22,8 @@ namespace PlantifyApp
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+
 
            
 
@@ -74,8 +77,24 @@ namespace PlantifyApp
 
             app.UseAuthorization();
             app.UseAuthentication();
-            app.UseStaticFiles();
-
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(Directory.GetCurrentDirectory(), "Assest", "User_images")),
+                RequestPath = "/Assest/User_images"
+            });
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+           Path.Combine(Directory.GetCurrentDirectory(), "Assest", "CommunityImages")),
+                RequestPath = "/Assest/CommunityImages"
+            });
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+           Path.Combine(Directory.GetCurrentDirectory(), "Assest", "CommunityVideos")),
+                RequestPath = "/Assest/CommunityVideos"
+            });
             app.MapControllers();
 
             app.Run();

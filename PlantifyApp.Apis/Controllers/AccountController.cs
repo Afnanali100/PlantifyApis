@@ -8,19 +8,22 @@ using PlantifyApp.Apis.Dtos;
 using PlantifyApp.Core.Models;
 using PlantifyApp.Core.Interfaces;
 using PlantifyApp.Apis.Errors;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace PlantifyApp.Apis.Controllers
 {
 
     public class AccountController : ApiBaseController
     {
+        private readonly RoleManager<IdentityRole> roleManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly ITokenService tokenService;
         private readonly IMapper mapper;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, IMapper mapper)
+        public AccountController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, IMapper mapper)
         {
             UserManager = userManager;
+            this.roleManager = roleManager;
             this.signInManager = signInManager;
             this.tokenService = tokenService;
             this.mapper = mapper;
@@ -49,40 +52,53 @@ namespace PlantifyApp.Apis.Controllers
         public async Task<ActionResult> Register(RegisterDto model)
         {
             if (CheckEmailExists(model.Email).Result.Value)
-
-                return BadRequest(new ApiValidationError() { Errors = new List<string> { "This Email Is Takon" } });
+                return BadRequest(new ApiValidationError() { Errors = new List<string> { "This Email Is Taken" } });
 
             if (CheckNameExists(model.DisplayName).Result.Value)
+                return BadRequest(new ApiValidationError() { Errors = new List<string> { "This Name Is Taken" } });
 
-                return BadRequest(new ApiValidationError() { Errors = new List<string> { "This Name Is Takon" } });
+            // Check if the role exists
+            if (!await roleManager.RoleExistsAsync(model.Role))
+            {
+                
+                    return NotFound(new ApiErrorResponde(500, "The Role is not Exist"));
+            }
 
             var user = new ApplicationUser()
             {
                 DisplayName = model.DisplayName,
                 Email = model.Email,
                 UserName = model.Email.Split('@')[0],
-                PhoneNumber = model.PhoneNumber
+                PhoneNumber = model.PhoneNumber,
+                Role = model.Role
             };
 
             var result = await UserManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
-                return BadRequest(new ApiErrorResponde(401));
+                // Log the errors or return them as part of the response
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return BadRequest(new ApiErrorResponde(401, errors[0].ToString()));
             }
 
-            return Ok(new 
+            // Assign the role to the user
+            var roleAssignResult = await UserManager.AddToRoleAsync(user, model.Role);
+            if (!roleAssignResult.Succeeded)
+                return BadRequest(new ApiErrorResponde(500, "Failed to assign role to the user"));
+
+            return Ok(new
             {
                 DisplayName = user.DisplayName,
                 Email = user.Email,
                 Token = await tokenService.CreateToken(user, UserManager)
             });
-
         }
 
 
 
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpGet("currentuser")]
+        [HttpGet("get-current-user")]
         public async Task<ActionResult> GetCurrentUser()
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
@@ -93,11 +109,19 @@ namespace PlantifyApp.Apis.Controllers
                 return NotFound("User not found.");
             }
 
+            var request = HttpContext.Request;
+            var requestUrl = $"{request.Scheme}://{request.Host}/Assest/User_images";
+            string image = null;
+            if (!string.IsNullOrEmpty(user.Image_name))
+                 image = $"{requestUrl}/{user.Image_name}";
+
             return Ok(new 
             {
                 DisplayName = user.DisplayName,
                 Email = user.Email,
-                Image_path = user.Image_path,
+                Image_path = image,
+                Role=user.Role,
+                Address=user.Address,
                 Token = await tokenService.CreateToken(user, UserManager)
             });
         }

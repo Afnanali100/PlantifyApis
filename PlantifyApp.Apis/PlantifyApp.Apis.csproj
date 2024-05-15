@@ -20,4 +20,9 @@
     <ProjectReference Include="..\PlantifyApp.Services\PlantifyApp.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Assest\CommunityImages\" />
+    <Folder Include="Assest\CommunityVideos\" />
+  </ItemGroup>
+
 </Project>

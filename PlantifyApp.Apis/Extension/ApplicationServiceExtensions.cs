@@ -3,6 +3,8 @@ using PlantifyApp.Core.Interfaces;
 using PlantifyApp.Apis.Helpers;
 using PlantifyApp.Repository;
 using PlantifyApp.Apis.Errors;
+using PlantifyApp.Repository.Repositories;
+using System.Text.Json.Serialization;
 
 namespace PlantifyApp.Apis.Extension
 {
@@ -13,7 +15,7 @@ namespace PlantifyApp.Apis.Extension
 
 
 
-
+         
 
 
 
@@ -42,8 +44,7 @@ namespace PlantifyApp.Apis.Extension
 
 
 
-           
-
+            Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 
             return Services;
