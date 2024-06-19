@@ -140,6 +140,15 @@ namespace PlantifyApp.Repository.Repositories
             
             return await dbcontext.Set<T>().FindAsync(id);
         }
+
+        public async Task<IReadOnlyList<Plants>> GetAllPlantsDetailsForSpecifcUser(string user_id)
+        {
+            var result = await dbcontext.Plants
+                .Where(x => x.user_id == user_id)
+                .ToListAsync();
+
+            return result;
+        }
     }
  
 }
