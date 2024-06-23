@@ -109,6 +109,8 @@ namespace PlantifyApp.Apis.Controllers
             }
         }
 
+
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("get-all-users-posts")]
         public async Task<ActionResult<IReadOnlyList<PostDto>>> GetAllPosts()
@@ -129,6 +131,15 @@ namespace PlantifyApp.Apis.Controllers
                         var requestUrl = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value;
                         foreach (var postDto in postDtos)
                         {
+                            var inneruser = await userManager.FindByIdAsync(postDto.user_id);
+                            if(inneruser!= null)
+                            {
+                                if (!string.IsNullOrEmpty(inneruser.Image_name))
+                                {
+                                    postDto.user_image = requestUrl + "/Assest/User_images/" + inneruser.Image_name;
+                                }
+                                postDto.user_name = inneruser.DisplayName;
+                            }
                             if (!string.IsNullOrEmpty(postDto.image_name))
                             {
                                 postDto.image_name = requestUrl + "/Assest/CommunityImages/" + postDto.image_name;
@@ -137,8 +148,49 @@ namespace PlantifyApp.Apis.Controllers
                             {
                                 postDto.video_name = requestUrl + "/Assest/CommunityVideos/" + postDto.video_name;
                             }
+                           
+
+                            foreach(var like in postDto.Likes)
+                            {
+                                if (user.Id == like.user_id)
+                                {
+                                    postDto.IsLiked = true;
+
+                                }
+                                var likeduser = await userManager.FindByIdAsync(like.user_id);
+                                if (likeduser != null)
+                                {
+                                    if (!string.IsNullOrEmpty(likeduser.Image_name))
+                                    {
+                                        like.user_image = requestUrl + "/Assest/User_images/" + likeduser.Image_name;
+                                    }
+                                    like.user_name = likeduser.DisplayName;
+                                }
+
+                            }
+
+                            foreach (var comment in postDto.Comments)
+                            {
+                                
+                                var commentuser = await userManager.FindByIdAsync(comment.user_id);
+                                if (commentuser != null)
+                                {
+                                    if (!string.IsNullOrEmpty(commentuser.Image_name))
+                                    {
+                                        comment.user_image = requestUrl + "/Assest/User_images/" + commentuser.Image_name;
+                                    }
+                                    comment.user_name = commentuser.DisplayName;
+                                }
+
+                            }
+
+
                         }
-                        return Ok(postDtos);
+                        return Ok( new
+                        {
+                            current_user_id = user.Id,
+                            posts = postDtos
+                        });
                     }
                     return NotFound(new ApiErrorResponde(404, "There are no posts available"));
                 }
@@ -146,6 +198,8 @@ namespace PlantifyApp.Apis.Controllers
             }
             return BadRequest(new ApiErrorResponde(400, "You are not authorized"));
         }
+
+
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("get-all-posts-for-specific-user")]
@@ -161,12 +215,23 @@ namespace PlantifyApp.Apis.Controllers
 
                     if (posts != null && posts.Any()) // Check if there are any posts
                     {
+
                         // Map posts to PostDto if needed
                         var postDtos = mapper.Map<IReadOnlyList<Posts>, IReadOnlyList<PostDto>>(posts);
 
                         var requestUrl = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value;
                         foreach (var postDto in postDtos)
                         {
+                            var inneruser = await userManager.FindByIdAsync(postDto.user_id);
+                            if (inneruser != null)
+                            {
+                                if (!string.IsNullOrEmpty(inneruser.Image_name))
+                                {
+                                    postDto.user_image = requestUrl + "/Assest/User_images/" + inneruser.Image_name;
+                                }
+                                postDto.user_name = inneruser.DisplayName;
+                            }
+
                             if (!string.IsNullOrEmpty(postDto.image_name))
                             {
                                 postDto.image_name = requestUrl + "/Assest/CommunityImages/" + postDto.image_name;
@@ -176,8 +241,47 @@ namespace PlantifyApp.Apis.Controllers
                                 postDto.video_name = requestUrl + "/Assest/CommunityVideos/" + postDto.video_name;
 
                             }
+
+                            foreach (var like in postDto.Likes)
+                            {
+                                if (user.Id == like.user_id)
+                                {
+                                    postDto.IsLiked = true;
+
+                                }
+                                var likeduser = await userManager.FindByIdAsync(like.user_id);
+                                if (likeduser != null)
+                                {
+                                    if (!string.IsNullOrEmpty(likeduser.Image_name))
+                                    {
+                                        like.user_image = requestUrl + "/Assest/User_images/" + likeduser.Image_name;
+                                    }
+                                    like.user_name = likeduser.DisplayName;
+                                }
+
+                            }
+
+                            foreach (var comment in postDto.Comments)
+                            {
+
+                                var commentuser = await userManager.FindByIdAsync(comment.user_id);
+                                if (commentuser != null)
+                                {
+                                    if (!string.IsNullOrEmpty(commentuser.Image_name))
+                                    {
+                                        comment.user_image = requestUrl + "/Assest/User_images/" + commentuser.Image_name;
+                                    }
+                                    comment.user_name = commentuser.DisplayName;
+                                }
+
+                            }
+
                         }
-                        return Ok(postDtos);
+                        return Ok(new
+                        {
+                            current_user_id = user.Id,
+                            posts = postDtos
+                        });
                     }
                     return NotFound(new ApiErrorResponde(404, "There are no posts available"));
                 }
@@ -198,48 +302,60 @@ namespace PlantifyApp.Apis.Controllers
                 if (user != null)
                 {
                     var post = await postRepo.GetByIdAsync(post_id);
-
                     if (post != null)
                     {
-                        string imagename = "", videoname = "";
-                        var requestUrl = Path.Combine(Directory.GetCurrentDirectory(), "Assest");
+                        if (post.user_id == user.Id)
+                    {
+                        
+                            string imagename = "", videoname = "";
+                            var requestUrl = Path.Combine(Directory.GetCurrentDirectory(), "Assest");
 
-                        if (!string.IsNullOrEmpty(post.image_name))
-                        {
-                            imagename = Path.Combine(requestUrl, "CommunityImages", post.image_name);
-                        }
-                        if (!string.IsNullOrEmpty(post.video_name))
-                        {
-                            videoname = Path.Combine(requestUrl, "CommunityVideos", post.video_name);
-                        }
-
-                        try
-                        {
-                            if (System.IO.File.Exists(imagename))
+                            if (!string.IsNullOrEmpty(post.image_name))
                             {
-                                System.IO.File.Delete(imagename);
+                                imagename = Path.Combine(requestUrl, "CommunityImages", post.image_name);
                             }
-                            if (System.IO.File.Exists(videoname))
+                            if (!string.IsNullOrEmpty(post.video_name))
                             {
-                                System.IO.File.Delete(videoname);
+                                videoname = Path.Combine(requestUrl, "CommunityVideos", post.video_name);
                             }
 
-                            // Delete the post from the repository after deleting the files
-                            await postRepo.Delete(post);
-
-                            return Ok(new
+                            try
                             {
-                                message = "Post Deleted Successfully!",
-                                StatusCode = 200
-                            });
+                                if (System.IO.File.Exists(imagename))
+                                {
+                                    System.IO.File.Delete(imagename);
+                                }
+                                if (System.IO.File.Exists(videoname))
+                                {
+                                    System.IO.File.Delete(videoname);
+                                }
+
+                                // Delete the post from the repository after deleting the files
+                                await commentRepo.DeleteByPostIdAsync(post_id);
+                               
+                                 await likeRepo.DeleteByPostIdAsync(post_id);
+                               
+                                await postRepo.Delete(post);
+
+                                return Ok(new
+                                {
+                                    message = "Post Deleted Successfully!",
+                                    StatusCode = 200
+                                });
+                            }
+
+                            catch (Exception ex)
+                            {
+                                // Log the exception and return an error response
+                                return StatusCode(500, new ApiErrorResponde(500, "Internal Server Error: " + ex.Message));
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            // Log the exception and return an error response
-                            return StatusCode(500, new ApiErrorResponde(500, "Internal Server Error: " + ex.Message));
-                        }
+                        return BadRequest(new ApiErrorResponde(400, "You are not authorized to delete this post"));
+
+
                     }
                     return NotFound(new ApiErrorResponde(404, "This post is not available"));
+
                 }
                 return BadRequest(new ApiErrorResponde(400, "You are not authorized"));
             }
@@ -346,6 +462,11 @@ namespace PlantifyApp.Apis.Controllers
         }
 
 
+
+
+
+
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("create-comment")]
         public async Task<ActionResult> CreateComment(int post_id, string comment)
@@ -358,7 +479,7 @@ namespace PlantifyApp.Apis.Controllers
                 if (user != null)
                 {
                     var post = await postRepo.GetByIdAsync(post_id);
-                    if (post.user_id == user.Id)
+                    if (post != null)
                     {
                         var commentdto = new CommentDto
                         {
@@ -367,16 +488,15 @@ namespace PlantifyApp.Apis.Controllers
                             content = comment,
                             creation_date = DateTime.Now,
                         };
-                        var Comment =mapper.Map<CommentDto,Comments>(commentdto);
+                        var Comment = mapper.Map<CommentDto, Comments>(commentdto);
                         await commentRepo.Add(Comment);
                         return Ok(new
                         {
                             message = "Comment created Successfully!",
                             statusCode = 200
                         });
-
                     }
-                    return BadRequest(new ApiErrorResponde(500, "internal server error"));
+                    return NotFound(new ApiErrorResponde(404, "this post is not exist"));
 
                 }
 
@@ -401,23 +521,31 @@ namespace PlantifyApp.Apis.Controllers
                 if (user != null)
                 {
                     var post = await postRepo.GetByIdAsync(post_id);
-                    if (post.user_id == user.Id)
+                   
+                    if (post!=null)
                     {
+
                         var comment = await commentRepo.GetByIdAsync(comment_id);
                         if (comment != null)
                         {
-
-                            await commentRepo.Delete(comment);
-                            return Ok(new
+                            if (comment.user_id == user.Id)
                             {
-                                message = "Comment Deleted Successfully!",
-                                statusCode = 200
-                            });
+                           
+
+                                await commentRepo.Delete(comment);
+                                return Ok(new
+                                {
+                                    message = "Comment Deleted Successfully!",
+                                    statusCode = 200
+                                });
+                            }
+                            return BadRequest(new ApiErrorResponde(400, "You are not authorized to delete this comment"));
+
                         }
                         return NotFound(new ApiErrorResponde(404, "ThIs Comment is not Exist"));
 
                     }
-                    return BadRequest(new ApiErrorResponde(500, "internal server error"));
+                    return NotFound(new ApiErrorResponde(404, "The post is not exist"));
 
                 }
 
@@ -441,24 +569,33 @@ namespace PlantifyApp.Apis.Controllers
                 if (user != null)
                 {
                     var post = await postRepo.GetByIdAsync(post_id);
-                    if (post.user_id == user.Id)
+                    if (post!=null)
                     {
                         var Comment = await commentRepo.GetByIdAsync(comment_id);
                         if (Comment != null)
                         {
-                            Comment.content = comment;
+                            if (Comment.user_id == user.Id) {
+                           
+                                
+                                    Comment.content = comment;
 
-                            await commentRepo.Update(Comment);
-                            return Ok(new
-                            {
-                                message = "Comment Updated Successfully!",
-                                statusCode = 200
-                            });
+                                    await commentRepo.Update(Comment);
+                                    return Ok(new
+                                    {
+                                        message = "Comment Updated Successfully!",
+                                        statusCode = 200
+                                    });
+                                
+
+                            }
+                            return BadRequest(new ApiErrorResponde(500, "This Comment is not belonged for this user so you are not authorized to update this comment"));
+
+
                         }
-                        return NotFound(new ApiErrorResponde(404, "ThIs Comment is not Exist"));
+                        return NotFound(new ApiErrorResponde(404, "This Comment is not Exist"));
 
                     }
-                    return BadRequest(new ApiErrorResponde(500, "internal server error"));
+                    return NotFound(new ApiErrorResponde(404, "This post is not Exist"));
 
                 }
 
@@ -476,7 +613,6 @@ namespace PlantifyApp.Apis.Controllers
         [HttpPost("create-like")]
         public async Task<ActionResult> CreateLike(int post_id)
         {
-
             var email = User.FindFirstValue(ClaimTypes.Email);
             if (!string.IsNullOrEmpty(email))
             {
@@ -484,76 +620,70 @@ namespace PlantifyApp.Apis.Controllers
                 if (user != null)
                 {
                     var post = await postRepo.GetByIdAsync(post_id);
-                    if (post.user_id == user.Id)
+                    if (post != null)
                     {
-                        var likedto = new LikeDto
+                        // Check if the user has already liked this post
+                        var existingLike = await likeRepo.GetByUserAndPostIdAsync(user.Id, post_id);
+                        if (existingLike == null)
                         {
-                            user_id = user.Id,
-                            post_id = post.post_id,
-                            creation_date = DateTime.Now,
-                        };
-                        var Like = mapper.Map<LikeDto, Likes>(likedto);
-                        await likeRepo.Add(Like);
-                        return Ok(new
-                        {
-                            message = "Like created Successfully!",
-                            statusCode = 200
-                        });
-
-                    }
-                    return BadRequest(new ApiErrorResponde(500, "internal server error"));
-
-                }
-
-                return BadRequest(new ApiErrorResponde(400, "You are not Authorized"));
-
-
-            }
-            return BadRequest(new ApiErrorResponde(400, "You are not Authorized"));
-
-        }
-
-
-
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpDelete("delete-like")]
-        public async Task<ActionResult> DeleteLike(int post_id,int like_id)
-        {
-
-            var email = User.FindFirstValue(ClaimTypes.Email);
-            if (!string.IsNullOrEmpty(email))
-            {
-                var user = await userManager.FindByEmailAsync(email);
-                if (user != null)
-                {
-                    var post = await postRepo.GetByIdAsync(post_id);
-                    if (post.user_id == user.Id)
-                    {
-                        var like =await likeRepo.GetByIdAsync(like_id);
-                        if(like != null)
-                        {
-                          await likeRepo.Delete(like);
-
+                            var likedto = new LikeDto
+                            {
+                                user_id = user.Id,
+                                post_id = post.post_id,
+                                creation_date = DateTime.Now,
+                            };
+                            var Like = mapper.Map<LikeDto, Likes>(likedto);
+                            await likeRepo.Add(Like);
                             return Ok(new
                             {
-                                message = "Like Deleted Successfully!",
+                                message = "Like created Successfully!",
                                 statusCode = 200
                             });
                         }
-                        return NotFound(new ApiErrorResponde(404, "this Like is not Exist"));
+                        return BadRequest(new ApiErrorResponde(400, "You have already liked this post"));
 
                     }
-                    return BadRequest(new ApiErrorResponde(500, "internal server error"));
-
+                    return NotFound(new ApiErrorResponde(404, "Post does not exist"));
                 }
-
-                return BadRequest(new ApiErrorResponde(400, "You are not Authorized"));
-
-
+                return BadRequest(new ApiErrorResponde(400, "You are not authorized"));
             }
-            return BadRequest(new ApiErrorResponde(400, "You are not Authorized"));
-
+            return BadRequest(new ApiErrorResponde(400, "You are not authorized"));
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpDelete("delete-like")]
+        public async Task<ActionResult> DeleteLike(int post_id)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            if (!string.IsNullOrEmpty(email))
+            {
+                var user = await userManager.FindByEmailAsync(email);
+                if (user != null)
+                {
+                    var post = await postRepo.GetByIdAsync(post_id);
+                    if (post != null)
+                    {
+                        var like = await likeRepo.GetByUserAndPostIdAsync(user.Id, post_id);
+                        if (like != null)
+                        {
+                            await likeRepo.Delete(like);
+                            return Ok(new
+                            {
+                                message = "Like deleted successfully!",
+                                statusCode = 200
+                            });
+                        }
+                        return NotFound(new ApiErrorResponde(404, "Like does not exist"));
+                    }
+                    return NotFound(new ApiErrorResponde(404, "Post does not exist"));
+                }
+                return BadRequest(new ApiErrorResponde(400, "You are not authorized"));
+            }
+            return BadRequest(new ApiErrorResponde(400, "You are not authorized"));
+        }
+
+
+
 
 
 

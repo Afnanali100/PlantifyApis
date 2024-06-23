@@ -188,25 +188,32 @@ namespace PlantifyApp.Apis.Controllers
             }
 
             var currentRoles = await userManager.GetRolesAsync(user);
-            var result = await userManager.RemoveFromRolesAsync(user, currentRoles);
-            if (!result.Succeeded)
+            var currentrole = currentRoles.FirstOrDefault();
+            if(currentrole != user.Role && user.Role!=null) { currentRoles = new List<string> { user.Role }; currentrole = user.Role; }
+            if (userManager.IsInRoleAsync(user, currentrole).Result)
             {
-                return BadRequest(new ApiErrorResponde(500, "Failed to remove current roles from the user"));
-            }
+                var result = await userManager.RemoveFromRolesAsync(user, currentRoles);
+                if (!result.Succeeded)
+                {
+                    return BadRequest(new ApiErrorResponde(500, "Failed to remove current roles from the user"));
+                }
 
-            result = await userManager.AddToRoleAsync(user, role);
-            if (!result.Succeeded)
-            {
-                return BadRequest(new ApiErrorResponde(500, "Failed to assign new role to the user"));
-            }
-            user.Role = role;
-           await userManager.UpdateAsync(user);
+                result = await userManager.AddToRoleAsync(user, role);
+                if (!result.Succeeded)
+                {
+                    return BadRequest(new ApiErrorResponde(500, "Failed to assign new role to the user"));
+                }
+                user.Role = role;
+                await userManager.UpdateAsync(user);
 
-            return Ok(new
-            {
-                message = "User type updated successfully!",
-                statusCode = 200
-            });
+                return Ok(new
+                {
+                    message = "User type updated successfully!",
+                    statusCode = 200
+                });
+            }
+            return BadRequest(new ApiErrorResponde(500, "Server Error please try later !"));
+
         }
 
 

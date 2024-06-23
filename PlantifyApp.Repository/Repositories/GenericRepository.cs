@@ -132,6 +132,38 @@ namespace PlantifyApp.Repository.Repositories
         }
 
 
+        public async Task DeleteByPostIdAsync(int post_id)
+        {
+            if (typeof(T) == typeof(Comments))
+            {
+                // Use Where to filter the comments by post_id
+                var comments = await dbcontext.Comments.Where(c => c.post_id == post_id).ToListAsync();
+
+                // Remove the filtered comments
+                dbcontext.Comments.RemoveRange(comments);
+
+                // Save changes to the database
+                await dbcontext.SaveChangesAsync();
+            }
+           else if (typeof(T) == typeof(Likes))
+            {
+                // Use Where to filter the comments by post_id
+                var likes = await dbcontext.likes.Where(c => c.post_id == post_id).ToListAsync();
+
+                // Remove the filtered comments
+                dbcontext.likes.RemoveRange(likes);
+
+                // Save changes to the database
+                await dbcontext.SaveChangesAsync();
+            }
+            else
+            {
+                // Handle other types or throw an exception if T is not supported
+                throw new NotSupportedException($"The type {typeof(T)} is not supported by this method.");
+            }
+        }
+
+
 
 
 
@@ -148,6 +180,12 @@ namespace PlantifyApp.Repository.Repositories
                 .ToListAsync();
 
             return result;
+        }
+
+
+        public async Task<Likes> GetByUserAndPostIdAsync(string userId, int postId)
+        {
+            return await dbcontext.likes.FirstOrDefaultAsync(l => l.user_id == userId && l.post_id == postId);
         }
     }
  
