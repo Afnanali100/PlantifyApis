@@ -58,7 +58,7 @@ namespace PlantifyApp.Apis.Controllers
                 return BadRequest(new ApiValidationError() { Errors = new List<string> { "This Name Is Taken" } });
 
             // Check if the role exists
-            if (!await roleManager.RoleExistsAsync(model.Role))
+            if (!await roleManager.RoleExistsAsync(model.Role)|| model.Role=="Admin")
             {
                 
                     return NotFound(new ApiErrorResponde(500, "The Role is not Exist"));
@@ -117,6 +117,7 @@ namespace PlantifyApp.Apis.Controllers
 
             return Ok(new 
             {
+                Id=user.Id,
                 DisplayName = user.DisplayName,
                 Email = user.Email,
                 Image_path = image,

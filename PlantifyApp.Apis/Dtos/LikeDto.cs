@@ -13,7 +13,14 @@ namespace PlantifyApp.Apis.Dtos
         [ForeignKey("Post")]
         public int? post_id { get; set; }
 
+        public string? user_name {  get; set; } 
+
+        public string?user_image { get; set; }
         public string? user_id { get; set; }
+
+        public string? current_user_id { get; set; }
+
+
         [JsonIgnore]
         public Posts? Post { get; set; } // Navigation property
 

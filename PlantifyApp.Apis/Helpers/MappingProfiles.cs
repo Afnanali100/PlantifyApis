@@ -13,6 +13,10 @@ namespace PlantifyApp.Apis.Helpers
             CreateMap<Posts, PostDto>().ReverseMap();
             CreateMap<Comments, CommentDto>().ReverseMap();
             CreateMap<Likes, LikeDto>().ReverseMap();
+            CreateMap<Plants, PlantDto>().ReverseMap();
+            CreateMap<ApplicationUser, UserDto>().ReverseMap();
+
+
 
         }
     }

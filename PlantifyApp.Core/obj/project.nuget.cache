@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "LUMbuGF/2MAmv/lsWgLUsO78+09B3/Pftej/RgqGi/xGAHSmvUJeidipTBMdpKvcwWfmcNpC8gRvuuNQkjC3jg==",
+  "dgSpecHash": "QIp3rig/kVt6X7NoxbKFXpyeTP9egQirIJDWHQaOieWzn8ZE49ICbSxC97QZLHHfRjb0Se/Ph79FvjuvLyDWlA==",
   "success": true,
   "projectFilePath": "D:\\Graduation Project\\Backend\\PlantifyApis\\PlantifyApp.Core\\PlantifyApp.Core.csproj",
   "expectedPackageFiles": [
@@ -41,9 +41,9 @@
     "C:\\Users\\dell\\.nuget\\packages\\system.text.encoding\\4.3.0\\system.text.encoding.4.3.0.nupkg.sha512",
     "C:\\Users\\dell\\.nuget\\packages\\system.text.encodings.web\\4.7.2\\system.text.encodings.web.4.7.2.nupkg.sha512",
     "C:\\Users\\dell\\.nuget\\packages\\system.text.json\\4.7.2\\system.text.json.4.7.2.nupkg.sha512",
-    "C:\\Users\\dell\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.30\\microsoft.windowsdesktop.app.ref.6.0.30.nupkg.sha512",
-    "C:\\Users\\dell\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.30\\microsoft.netcore.app.ref.6.0.30.nupkg.sha512",
-    "C:\\Users\\dell\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.30\\microsoft.aspnetcore.app.ref.6.0.30.nupkg.sha512"
+    "C:\\Users\\dell\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.31\\microsoft.windowsdesktop.app.ref.6.0.31.nupkg.sha512",
+    "C:\\Users\\dell\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.31\\microsoft.netcore.app.ref.6.0.31.nupkg.sha512",
+    "C:\\Users\\dell\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.31\\microsoft.aspnetcore.app.ref.6.0.31.nupkg.sha512"
   ],
   "logs": []
 }

@@ -13,11 +13,17 @@ namespace PlantifyApp.Core.Interfaces
 
 
         public Task<T> GetByIdAsync(int id);
+        public  Task DeleteByPostIdAsync(int post_id);
+
+        public Task<Likes> GetByUserAndPostIdAsync(string userId, int postId);
         Task Add(T entity);
         Task Update(T entity);
 
         Task Delete(T entity);
         public  Task<IReadOnlyList<Posts>> GetAllPostsForSpecifcUser(string user_id);
+
+        public Task<IReadOnlyList<Plants>> GetAllPlantsDetailsForSpecifcUser(string user_id);
+
 
     }
 }

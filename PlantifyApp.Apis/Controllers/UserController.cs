@@ -30,7 +30,7 @@ namespace PlantifyApp.Apis.Controllers
         [HttpGet("get-user-types")]
         public async Task<ActionResult> GetUserRoles()
         {
-            var roles = roleManager.Roles.Select(r => r.Name).ToList();
+            var roles = roleManager.Roles.Where(r=>r.Name!="Admin").ToList();
             return Ok(roles);
         }
 
@@ -170,6 +170,7 @@ namespace PlantifyApp.Apis.Controllers
         [HttpPut("edit-user-type")]
         public async Task<ActionResult> EditUserRole(string role)
         {
+
             var email = User.FindFirstValue(ClaimTypes.Email);
             if (string.IsNullOrEmpty(email))
             {
@@ -182,35 +183,41 @@ namespace PlantifyApp.Apis.Controllers
                 return NotFound(new ApiErrorResponde(404, "User Not Found!"));
             }
 
-            if (!await roleManager.RoleExistsAsync(role))
+            if (!await roleManager.RoleExistsAsync(role)|| role=="Admin")
             {
                 return NotFound(new ApiErrorResponde(404, "The Role does not exist"));
             }
 
             var currentRoles = await userManager.GetRolesAsync(user);
-            var result = await userManager.RemoveFromRolesAsync(user, currentRoles);
-            if (!result.Succeeded)
+            var currentrole = currentRoles.FirstOrDefault();
+            if(currentrole != user.Role && user.Role!=null) { currentRoles = new List<string> { user.Role }; currentrole = user.Role; }
+            if (userManager.IsInRoleAsync(user, currentrole).Result)
             {
-                return BadRequest(new ApiErrorResponde(500, "Failed to remove current roles from the user"));
-            }
+                var result = await userManager.RemoveFromRolesAsync(user, currentRoles);
+                if (!result.Succeeded)
+                {
+                    return BadRequest(new ApiErrorResponde(500, "Failed to remove current roles from the user"));
+                }
 
-            result = await userManager.AddToRoleAsync(user, role);
-            if (!result.Succeeded)
-            {
-                return BadRequest(new ApiErrorResponde(500, "Failed to assign new role to the user"));
-            }
-            user.Role = role;
-           await userManager.UpdateAsync(user);
+                result = await userManager.AddToRoleAsync(user, role);
+                if (!result.Succeeded)
+                {
+                    return BadRequest(new ApiErrorResponde(500, "Failed to assign new role to the user"));
+                }
+                user.Role = role;
+                await userManager.UpdateAsync(user);
 
-            return Ok(new
-            {
-                message = "User type updated successfully!",
-                statusCode = 200
-            });
+                return Ok(new
+                {
+                    message = "User type updated successfully!",
+                    statusCode = 200
+                });
+            }
+            return BadRequest(new ApiErrorResponde(500, "Server Error please try later !"));
+
         }
 
-
-
+   
     }
 }
 
