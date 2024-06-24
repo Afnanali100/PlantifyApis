@@ -30,7 +30,7 @@ namespace PlantifyApp.Apis.Controllers
         [HttpGet("get-user-types")]
         public async Task<ActionResult> GetUserRoles()
         {
-            var roles = roleManager.Roles.Select(r => r.Name).ToList();
+            var roles = roleManager.Roles.Where(r=>r.Name!="Admin").ToList();
             return Ok(roles);
         }
 
@@ -170,6 +170,7 @@ namespace PlantifyApp.Apis.Controllers
         [HttpPut("edit-user-type")]
         public async Task<ActionResult> EditUserRole(string role)
         {
+
             var email = User.FindFirstValue(ClaimTypes.Email);
             if (string.IsNullOrEmpty(email))
             {
@@ -182,7 +183,7 @@ namespace PlantifyApp.Apis.Controllers
                 return NotFound(new ApiErrorResponde(404, "User Not Found!"));
             }
 
-            if (!await roleManager.RoleExistsAsync(role))
+            if (!await roleManager.RoleExistsAsync(role)|| role=="Admin")
             {
                 return NotFound(new ApiErrorResponde(404, "The Role does not exist"));
             }
@@ -216,8 +217,7 @@ namespace PlantifyApp.Apis.Controllers
 
         }
 
-
-
+   
     }
 }
 

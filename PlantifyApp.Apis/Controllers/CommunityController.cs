@@ -131,6 +131,7 @@ namespace PlantifyApp.Apis.Controllers
                         var requestUrl = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value;
                         foreach (var postDto in postDtos)
                         {
+                            postDto.current_user_id=user.Id;
                             var inneruser = await userManager.FindByIdAsync(postDto.user_id);
                             if(inneruser!= null)
                             {
@@ -166,6 +167,7 @@ namespace PlantifyApp.Apis.Controllers
                                     }
                                     like.user_name = likeduser.DisplayName;
                                 }
+                                like.current_user_id = user.Id;
 
                             }
 
@@ -182,15 +184,12 @@ namespace PlantifyApp.Apis.Controllers
                                     comment.user_name = commentuser.DisplayName;
                                 }
 
+                                comment.current_user_id=user.Id;
                             }
 
 
                         }
-                        return Ok( new
-                        {
-                            current_user_id = user.Id,
-                            posts = postDtos
-                        });
+                        return Ok( postDtos );
                     }
                     return NotFound(new ApiErrorResponde(404, "There are no posts available"));
                 }
@@ -222,6 +221,7 @@ namespace PlantifyApp.Apis.Controllers
                         var requestUrl = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value;
                         foreach (var postDto in postDtos)
                         {
+                            postDto.current_user_id = user.Id;
                             var inneruser = await userManager.FindByIdAsync(postDto.user_id);
                             if (inneruser != null)
                             {
@@ -258,7 +258,7 @@ namespace PlantifyApp.Apis.Controllers
                                     }
                                     like.user_name = likeduser.DisplayName;
                                 }
-
+                                like.current_user_id = user.Id;
                             }
 
                             foreach (var comment in postDto.Comments)
@@ -273,15 +273,11 @@ namespace PlantifyApp.Apis.Controllers
                                     }
                                     comment.user_name = commentuser.DisplayName;
                                 }
-
+                                comment.current_user_id = user.Id;
                             }
 
                         }
-                        return Ok(new
-                        {
-                            current_user_id = user.Id,
-                            posts = postDtos
-                        });
+                        return Ok( postDtos );
                     }
                     return NotFound(new ApiErrorResponde(404, "There are no posts available"));
                 }
