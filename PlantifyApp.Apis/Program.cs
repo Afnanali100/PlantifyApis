@@ -23,9 +23,14 @@ namespace PlantifyApp
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            //------------Add CORS Services----------------------
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            });
 
 
-           
 
             ///----------------Extiensions------------------------
             builder.Services.AddApplicationService();
@@ -74,6 +79,8 @@ namespace PlantifyApp
             app.UseStatusCodePagesWithRedirects("/errors/{0}");
 
             app.UseHttpsRedirection();
+
+            app.UseCors("AllowAllOrigins");
 
             app.UseAuthorization();
             app.UseAuthentication();

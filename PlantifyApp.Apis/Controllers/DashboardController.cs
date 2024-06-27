@@ -132,7 +132,7 @@ namespace PlantifyApp.Apis.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("add-new-user")]
-        public async Task<ActionResult> AddNewUser(string name, string email, string password, string role, IFormFile image)
+        public async Task<ActionResult> AddNewUser(string name, string email, string password, string role, IFormFile? image)
         {
             // Validate role
             if (!await roleManager.RoleExistsAsync(role) || role == "Admin")

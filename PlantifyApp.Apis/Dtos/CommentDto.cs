@@ -20,6 +20,10 @@ namespace PlantifyApp.Apis.Dtos
 
         public string? user_image { get; set; }
         public string? content { get; set; }
+
+        public string? user_role { get; set; }
+
+
         [JsonIgnore]
         public Posts? Post { get; set; } // Navigation property
 
