@@ -17,6 +17,9 @@ namespace PlantifyApp.Repository.Identity
         public DbSet<Comments> Comments { get; set; }
         public DbSet<Plants> Plants { get; set; }
 
+        public DbSet<Contactus> Contactus { get; set; }
+
+
 
 
     }

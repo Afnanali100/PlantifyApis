@@ -16,6 +16,9 @@ namespace PlantifyApp.Apis.Helpers
             CreateMap<Plants, PlantDto>().ReverseMap();
             CreateMap<ApplicationUser, UserDto>().ReverseMap();
 
+            CreateMap<Contactus, ContactusDto>().ReverseMap();
+
+
 
 
         }

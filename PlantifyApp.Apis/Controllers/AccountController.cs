@@ -70,7 +70,8 @@ namespace PlantifyApp.Apis.Controllers
                 Email = model.Email,
                 UserName = model.Email.Split('@')[0],
                 PhoneNumber = model.PhoneNumber,
-                Role = model.Role
+                Role = model.Role,
+                created_date=DateTime.Now
             };
 
             var result = await UserManager.CreateAsync(user, model.Password);

@@ -140,6 +140,8 @@ namespace PlantifyApp.Apis.Controllers
                                     postDto.user_image = requestUrl + "/Assest/User_images/" + inneruser.Image_name;
                                 }
                                 postDto.user_name = inneruser.DisplayName;
+                                postDto.user_role = inneruser.Role;
+
                             }
                             if (!string.IsNullOrEmpty(postDto.image_name))
                             {
@@ -149,9 +151,8 @@ namespace PlantifyApp.Apis.Controllers
                             {
                                 postDto.video_name = requestUrl + "/Assest/CommunityVideos/" + postDto.video_name;
                             }
-                           
 
-                            foreach(var like in postDto.Likes)
+                            foreach (var like in postDto.Likes)
                             {
                                 if (user.Id == like.user_id)
                                 {
@@ -166,8 +167,10 @@ namespace PlantifyApp.Apis.Controllers
                                         like.user_image = requestUrl + "/Assest/User_images/" + likeduser.Image_name;
                                     }
                                     like.user_name = likeduser.DisplayName;
+                                    like.user_role = likeduser.Role;
                                 }
                                 like.current_user_id = user.Id;
+                                
 
                             }
 
@@ -182,6 +185,8 @@ namespace PlantifyApp.Apis.Controllers
                                         comment.user_image = requestUrl + "/Assest/User_images/" + commentuser.Image_name;
                                     }
                                     comment.user_name = commentuser.DisplayName;
+                                    comment.user_role = commentuser.Role;
+
                                 }
 
                                 comment.current_user_id=user.Id;
@@ -229,6 +234,8 @@ namespace PlantifyApp.Apis.Controllers
                                 {
                                     postDto.user_image = requestUrl + "/Assest/User_images/" + inneruser.Image_name;
                                 }
+                                postDto.user_role = inneruser.Role;
+
                                 postDto.user_name = inneruser.DisplayName;
                             }
 
@@ -257,6 +264,8 @@ namespace PlantifyApp.Apis.Controllers
                                         like.user_image = requestUrl + "/Assest/User_images/" + likeduser.Image_name;
                                     }
                                     like.user_name = likeduser.DisplayName;
+                                    like.user_role = likeduser.Role;
+
                                 }
                                 like.current_user_id = user.Id;
                             }
@@ -272,6 +281,7 @@ namespace PlantifyApp.Apis.Controllers
                                         comment.user_image = requestUrl + "/Assest/User_images/" + commentuser.Image_name;
                                     }
                                     comment.user_name = commentuser.DisplayName;
+                                    comment.user_role = commentuser.Role;
                                 }
                                 comment.current_user_id = user.Id;
                             }
@@ -526,7 +536,7 @@ namespace PlantifyApp.Apis.Controllers
                         {
                             if (comment.user_id == user.Id)
                             {
-                           
+
 
                                 await commentRepo.Delete(comment);
                                 return Ok(new

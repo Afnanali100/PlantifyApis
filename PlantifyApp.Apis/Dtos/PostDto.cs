@@ -14,6 +14,8 @@ namespace PlantifyApp.Apis.Dtos
 
 
         public string? user_name { get; set; }
+        public string? user_role { get; set; }
+
 
         public string? user_image { get; set; }
         public string? description { get; set; }
