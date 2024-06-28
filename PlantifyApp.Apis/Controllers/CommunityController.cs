@@ -536,7 +536,7 @@ namespace PlantifyApp.Apis.Controllers
                         {
                             if (comment.user_id == user.Id)
                             {
-                           
+
 
                                 await commentRepo.Delete(comment);
                                 return Ok(new

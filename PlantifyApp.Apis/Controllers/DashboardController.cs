@@ -24,8 +24,12 @@ namespace PlantifyApp.Apis.Controllers
         private readonly ITokenService tokenService;
         private readonly IMapper mapper;
         private readonly IGenericRepository<ApplicationUser> userRepo;
+        private readonly IGenericRepository<Comments> commentRepo;
+        private readonly IGenericRepository<Likes> likeRepo;
+        private readonly IGenericRepository<Posts> postRepo;
+        private readonly IGenericRepository<Contactus> contactusRepo;
 
-        public DashboardController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, IMapper mapper, IGenericRepository<ApplicationUser> userRepo)
+        public DashboardController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, IMapper mapper, IGenericRepository<ApplicationUser> userRepo, IGenericRepository<Comments> commentRepo, IGenericRepository<Likes> likeRepo, IGenericRepository<Posts> postRepo, IGenericRepository<Contactus> contactusRepo)
         {
             UserManager = userManager;
             this.roleManager = roleManager;
@@ -33,6 +37,10 @@ namespace PlantifyApp.Apis.Controllers
             this.tokenService = tokenService;
             this.mapper = mapper;
             this.userRepo = userRepo;
+            this.commentRepo = commentRepo;
+            this.likeRepo = likeRepo;
+            this.postRepo = postRepo;
+            this.contactusRepo = contactusRepo;
         }
 
         public UserManager<ApplicationUser> UserManager { get; }
@@ -86,7 +94,7 @@ namespace PlantifyApp.Apis.Controllers
                     }
                 }
                 // Filter out non-admin users
-                var Users = userdto.Where(u => u.Role != "Admin").ToList();
+                var Users = userdto.Where(u => u.Role!= "Admin").ToList();
 
                 // Apply pagination
                 var pagedUsers = Users.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
@@ -159,6 +167,7 @@ namespace PlantifyApp.Apis.Controllers
                 DisplayName = name,
                 Role = role,
                 UserName = email.Split('@')[0],
+                created_date=DateTime.Now
 
             };
 
@@ -264,8 +273,12 @@ namespace PlantifyApp.Apis.Controllers
             {
                 user.Role = role;
             }
+          var resu=await UserManager.AddToRoleAsync(user, role);
 
-
+            if (!resu.Succeeded)
+            {
+                return BadRequest(new ApiErrorResponde(400, "Failed to update user Role."));
+            }
             var result = await UserManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
@@ -344,6 +357,10 @@ namespace PlantifyApp.Apis.Controllers
                 return NotFound(new ApiErrorResponde(404, "User not found."));
             }
 
+                 
+            await postRepo.DeleteByUserIdAsync(id);
+            await commentRepo.DeleteByUserIdAsync(id);
+            await likeRepo.DeleteByUserIdAsync(id);
             var result = await UserManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
@@ -370,7 +387,7 @@ namespace PlantifyApp.Apis.Controllers
                 Email = email,
                 DisplayName = name,
                 Role = "Admin",
-
+                created_date=DateTime.Now
             };
 
             var result = await UserManager.CreateAsync(user, password);
@@ -522,7 +539,9 @@ namespace PlantifyApp.Apis.Controllers
             {
                 return NotFound(new ApiErrorResponde(404, "Admin not found."));
             }
-
+            await postRepo.DeleteByUserIdAsync(id);
+            await commentRepo.DeleteByUserIdAsync(id);
+            await likeRepo.DeleteByUserIdAsync(id);
             var result = await UserManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
@@ -588,6 +607,115 @@ namespace PlantifyApp.Apis.Controllers
             return Ok(userDto);
         }
 
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("get-user-counts-by-role")]
+        public async Task<ActionResult> GetUserCountsByRole()
+        {
+            var roles = new[] { "User", "Agricultural engineer", "Botanist", "Expert","Admin" };
+
+            var userCountsByRole = new Dictionary<string, int>();
+
+            foreach (var role in roles)
+            {
+                var usersInRole = await UserManager.GetUsersInRoleAsync(role);
+                userCountsByRole[role] = usersInRole.Count;
+            }
+
+            return Ok(userCountsByRole);
+        }
+
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("user-counts-over-time")]
+        public async Task<ActionResult> GetUserCountsOverTime(string period = "monthly")
+        {
+            try
+            {
+                var users = await userRepo.GetAllAsync(); // Assuming this method retrieves all users from the repository
+
+                var userCountsOverTime = new Dictionary<string, int>();
+
+                // Example logic: count users based on creation date for different time periods
+                switch (period.ToLower())
+                {
+                    case "daily":
+                        userCountsOverTime = CountUsersByPeriod(users, user => user.created_date?.Date.ToShortDateString());
+                        break;
+                    case "monthly":
+                        userCountsOverTime = CountUsersByPeriod(users, user => user.created_date?.ToString("MM-yyyy"));
+                        break;
+                    case "yearly":
+                        userCountsOverTime = CountUsersByPeriod(users, user => user.created_date?.Year.ToString());
+                        break;
+                    default:
+                        return BadRequest(new ApiErrorResponde(400, "Invalid period. Supported periods: daily, monthly, yearly"));
+                }
+
+                return Ok(userCountsOverTime);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve user counts over time: {ex.Message}");
+            }
+        }
+
+        private Dictionary<string, int> CountUsersByPeriod(IEnumerable<ApplicationUser> users, Func<ApplicationUser, string> periodSelector)
+        {
+            var userCounts = new Dictionary<string, int>();
+
+            foreach (var user in users)
+            {
+                var period = periodSelector(user);
+
+                if (userCounts.ContainsKey(period))
+                {
+                    userCounts[period]++;
+                }
+                else
+                {
+                    userCounts[period] = 1;
+                }
+            }
+
+            return userCounts;
+        }
+
+
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("contactus/all")]
+        public async Task<ActionResult<IEnumerable<ContactusDto>>> GetAllContactUsMessages()
+        {
+            var messages = await contactusRepo.GetAllAsync();
+            var messageDtos = mapper.Map<IEnumerable<Contactus>, IEnumerable<ContactusDto>>(messages);
+            return Ok(messageDtos);
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPut("contactus/update")]
+        public async Task<ActionResult> UpdateContactUsMessage(int id ,int is_replied)
+        {
+            var message = await contactusRepo.GetByIdAsync(id);
+            if (message == null)
+            {
+                return NotFound(new ApiErrorResponde(404, "Message not found."));
+            }
+            if(is_replied==1)
+            message.is_replied = true;
+            else
+             message.is_replied = false;
+
+            await contactusRepo.Update(message);
+
+
+
+            return Ok(new
+            {
+                message = "Message status updated successfully.",
+                statusCode = 200
+            });
+        }
 
 
 
