@@ -138,6 +138,82 @@ namespace PlantifyApp.Apis.Controllers
 
         }
 
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("search-users")]
+        public async Task<ActionResult> SearchUsers(string query, int pageNumber = 1)
+        {
+            int pageSize = 10;
+            var users = await userRepo.GetAllAsync();
+            if (users != null)
+            {
+                var userdto = mapper.Map<IReadOnlyList<ApplicationUser>, IReadOnlyList<UserDto>>(users);
+
+                foreach (var user in userdto)
+                {
+                    if (user.Image_name != null)
+                    {
+                        var request = HttpContext.Request;
+                        var requestUrl = $"{request.Scheme}://{request.Host}/Assest/User_images";
+                        string image = null;
+                        if (!string.IsNullOrEmpty(user.Image_name))
+                            image = $"{requestUrl}/{user.Image_name}";
+                        user.Image_name = image;
+                    }
+                }
+
+                // Filter users by query (name or email)
+                var filteredUsers = userdto.Where(u => u.DisplayName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                                                       u.Email.Contains(query, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                // Exclude Admins
+                filteredUsers = filteredUsers.Where(u => u.Role != "Admin").ToList();
+
+                // Apply pagination
+                var pagedUsers = filteredUsers.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+                return Ok(pagedUsers);
+            }
+            return NotFound(new ApiErrorResponde(404, "There is no user"));
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("search-admins")]
+        public async Task<ActionResult> SearchAdmins(string query, int pageNumber = 1)
+        {
+            int pageSize = 10;
+            var users = await userRepo.GetAllAsync();
+            if (users != null)
+            {
+                var userdto = mapper.Map<IReadOnlyList<ApplicationUser>, IReadOnlyList<UserDto>>(users);
+
+                foreach (var user in userdto)
+                {
+                    if (user.Image_name != null)
+                    {
+                        var request = HttpContext.Request;
+                        var requestUrl = $"{request.Scheme}://{request.Host}/Assest/User_images";
+                        string image = null;
+                        if (!string.IsNullOrEmpty(user.Image_name))
+                            image = $"{requestUrl}/{user.Image_name}";
+                        user.Image_name = image;
+                    }
+                }
+
+                // Filter admins by query (name or email)
+                var filteredAdmins = userdto.Where(u => u.Role == "Admin" &&
+                                                        (u.DisplayName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                                                         u.Email.Contains(query, StringComparison.OrdinalIgnoreCase))).ToList();
+
+                // Apply pagination
+                var pagedAdmins = filteredAdmins.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+                return Ok(pagedAdmins);
+            }
+            return NotFound(new ApiErrorResponde(404, "There is no admin"));
+        }
+
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("add-new-user")]
         public async Task<ActionResult> AddNewUser(string name, string email, string password, string role, IFormFile? image)
@@ -223,11 +299,11 @@ namespace PlantifyApp.Apis.Controllers
         public async Task<ActionResult> UpdateUser(string id, string? name, string? email, string? role, IFormFile? image)
         {
             var user = await UserManager.FindByIdAsync(id);
-            if (user == null )
+            if (user == null)
             {
                 return NotFound(new ApiErrorResponde(404, "User not found."));
             }
-            if(user.Role == "Admin")
+            if (user.Role == "Admin")
             {
                 return NotFound(new ApiErrorResponde(404, "User not found."));
             }
@@ -235,22 +311,22 @@ namespace PlantifyApp.Apis.Controllers
             if (!string.IsNullOrEmpty(email))
             {
                 var existingUser = await UserManager.FindByEmailAsync(email);
-                if (existingUser != null)
+                if (existingUser != null && existingUser.Id != user.Id)
                 {
                     return BadRequest(new ApiErrorResponde(400, "User with this email already exists."));
                 }
             }
-           if(!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(name))
             {
                 var existingUsername = await UserManager.FindByNameAsync(name);
-                if (existingUsername != null)
+                if (existingUsername != null && existingUsername.Id != user.Id  )
                 {
                     return BadRequest(new ApiErrorResponde(400, "User with this name already exists."));
                 }
             }
-          
 
-            if (!await roleManager.RoleExistsAsync(role)|| role=="Admin")
+
+            if (!await roleManager.RoleExistsAsync(role) || role == "Admin")
             {
                 return BadRequest(new ApiErrorResponde(400, "Invalid role."));
             }
@@ -265,43 +341,33 @@ namespace PlantifyApp.Apis.Controllers
 
             }
             var currentRoles = await UserManager.GetRolesAsync(user);
-            if(currentRoles!=null && currentRoles.FirstOrDefault() != user.Role)
-            {
-                currentRoles = new List<string> { user.Role };
-            }
-            if (!string.IsNullOrEmpty(role))
+            var exitingrole = currentRoles.FirstOrDefault();
+            
+            if (!string.IsNullOrEmpty(role) && exitingrole.ToLower() !=user.Role.ToLower() )
             {
                 user.Role = role;
-            }
-          var resu=await UserManager.AddToRoleAsync(user, role);
+              await  UserManager.RemoveFromRoleAsync(user, exitingrole);
+                var resu = await UserManager.AddToRoleAsync(user, role);
 
-            if (!resu.Succeeded)
-            {
-                return BadRequest(new ApiErrorResponde(400, "Failed to update user Role."));
+                if (!resu.Succeeded)
+                {
+                    return BadRequest(new ApiErrorResponde(400, "Failed to update user Role."));
+                }
             }
+           
             var result = await UserManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
                 return BadRequest(new ApiErrorResponde(400, "Failed to update user."));
             }
 
-            var removeRolesResult = await UserManager.RemoveFromRolesAsync(user, currentRoles);
-            if (!removeRolesResult.Succeeded)
-            {
-                return BadRequest(new ApiErrorResponde(400, "Failed to remove existing roles."));
-            }
-
-            var addRoleResult = await UserManager.AddToRoleAsync(user, role);
-            if (!addRoleResult.Succeeded)
-            {
-                return BadRequest(new ApiErrorResponde(400, "Failed to assign new role."));
-            }
+          
 
             if (image != null && image.Length > 0)
             {
                 try
                 {
-                   
+
                     string guid = Guid.NewGuid().ToString();
                     string fileExtension = Path.GetExtension(image.FileName);
                     string newFileName = $"{guid}_{Path.GetFileNameWithoutExtension(image.FileName)}{fileExtension}";
@@ -327,7 +393,7 @@ namespace PlantifyApp.Apis.Controllers
                     }
 
                     user.Image_name = newFileName;
-                   var res= await UserManager.UpdateAsync(user);
+                    var res = await UserManager.UpdateAsync(user);
                     if (!res.Succeeded)
                     {
                         return BadRequest(new ApiErrorResponde(400, "Failed to updating User."));
@@ -357,10 +423,12 @@ namespace PlantifyApp.Apis.Controllers
                 return NotFound(new ApiErrorResponde(404, "User not found."));
             }
 
-                 
-            await postRepo.DeleteByUserIdAsync(id);
+            
+
             await commentRepo.DeleteByUserIdAsync(id);
             await likeRepo.DeleteByUserIdAsync(id);
+            await postRepo.DeleteByUserIdAsync(id);
+            
             var result = await UserManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
@@ -435,28 +503,30 @@ namespace PlantifyApp.Apis.Controllers
         public async Task<ActionResult> UpdateAdmin(string id, string? name, string? email, IFormFile? image)
         {
             var user = await UserManager.FindByIdAsync(id);
-            if (user == null )
+            if (user == null)
             {
                 return NotFound(new ApiErrorResponde(404, "Admin not found."));
             }
             if (user.Role != "Admin")
             {
                 return NotFound(new ApiErrorResponde(404, "Admin not found."));
-
             }
-            // Check if user already exists
-            if (!string.IsNullOrEmpty(email))
+
+            // Check if new email is different from the current one
+            if (!string.IsNullOrEmpty(email) && email != user.Email)
             {
                 var existingUser = await UserManager.FindByEmailAsync(email);
-                if (existingUser != null)
+                if (existingUser != null && existingUser.Id != user.Id)
                 {
                     return BadRequest(new ApiErrorResponde(400, "Admin with this email already exists."));
                 }
             }
-            if (!string.IsNullOrEmpty(name))
+
+            // Check if new name is different from the current one
+            if (!string.IsNullOrEmpty(name) && name != user.DisplayName)
             {
                 var existingUsername = await UserManager.FindByNameAsync(name);
-                if (existingUsername != null)
+                if (existingUsername != null && existingUsername.Id != user.Id)
                 {
                     return BadRequest(new ApiErrorResponde(400, "Admin with this name already exists."));
                 }
@@ -470,16 +540,13 @@ namespace PlantifyApp.Apis.Controllers
             {
                 user.Email = email;
                 user.UserName = email.Split('@')[0];
-
             }
 
             var result = await UserManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
-                return BadRequest(new ApiErrorResponde(400, "Failed to update user."));
+                return BadRequest(new ApiErrorResponde(400, "Failed to update admin."));
             }
-
-        
 
             if (image != null && image.Length > 0)
             {
@@ -514,7 +581,7 @@ namespace PlantifyApp.Apis.Controllers
                     var res = await UserManager.UpdateAsync(user);
                     if (!res.Succeeded)
                     {
-                        return BadRequest(new ApiErrorResponde(400, "Failed to updating Admin."));
+                        return BadRequest(new ApiErrorResponde(400, "Failed to updating admin."));
                     }
                 }
                 catch (Exception ex)
@@ -525,6 +592,7 @@ namespace PlantifyApp.Apis.Controllers
 
             return Ok(new { message = "Admin updated successfully!", statusCode = 200 });
         }
+
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete("delete-admin")]
@@ -539,9 +607,10 @@ namespace PlantifyApp.Apis.Controllers
             {
                 return NotFound(new ApiErrorResponde(404, "Admin not found."));
             }
-            await postRepo.DeleteByUserIdAsync(id);
             await commentRepo.DeleteByUserIdAsync(id);
             await likeRepo.DeleteByUserIdAsync(id);
+            await postRepo.DeleteByUserIdAsync(id);
+
             var result = await UserManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
@@ -681,6 +750,59 @@ namespace PlantifyApp.Apis.Controllers
             return userCounts;
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("user-engagements-over-time")]
+        public async Task<ActionResult> GetUserEngagementsOverTime(string period = "monthly")
+        {
+            try
+            {
+                var posts = await postRepo.GetAllAsync(); // Assuming this method retrieves all posts from the repository
+
+                var engagementsOverTime = new Dictionary<string, int>();
+
+                switch (period.ToLower())
+                {
+                    case "daily":
+                        engagementsOverTime = CountEngagementsByPeriod(posts, post => post.creation_date?.Date.ToShortDateString());
+                        break;
+                    case "monthly":
+                        engagementsOverTime = CountEngagementsByPeriod(posts, post => post.creation_date?.ToString("MM-yyyy"));
+                        break;
+                    case "yearly":
+                        engagementsOverTime = CountEngagementsByPeriod(posts, post => post.creation_date?.Year.ToString());
+                        break;
+                    default:
+                        return BadRequest(new ApiErrorResponde(400, "Invalid period. Supported periods: daily, monthly, yearly"));
+                }
+
+                return Ok(engagementsOverTime);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to retrieve user engagements over time: {ex.Message}");
+            }
+        }
+
+        private Dictionary<string, int> CountEngagementsByPeriod(IEnumerable<Posts> posts, Func<Posts, string> periodSelector)
+        {
+            var engagements = new Dictionary<string, int>();
+
+            foreach (var post in posts)
+            {
+                var period = periodSelector(post);
+
+                if (engagements.ContainsKey(period))
+                {
+                    engagements[period]++;
+                }
+                else
+                {
+                    engagements[period] = 1;
+                }
+            }
+
+            return engagements;
+        }
 
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

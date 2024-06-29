@@ -196,6 +196,26 @@ namespace PlantifyApp.Repository.Repositories
                 // Use Where to filter the comments by post_id
                 var posts = await dbcontext.Posts.Where(c => c.user_id == user_id).ToListAsync();
 
+                if (posts != null) {
+                    foreach ( var post in posts) {
+                        // Use Where to filter the comments by post_id
+                        var comments = await dbcontext.Comments.Where(c => c.post_id ==post.post_id ).ToListAsync();
+
+                        // Remove the filtered comments
+                        dbcontext.Comments.RemoveRange(comments);
+
+                        await dbcontext.SaveChangesAsync();
+
+
+                        var likes = await dbcontext.likes.Where(c => c.post_id == post.post_id).ToListAsync();
+
+                        // Remove the filtered comments
+                        dbcontext.likes.RemoveRange(likes);
+
+                        // Save changes to the database
+                        await dbcontext.SaveChangesAsync();
+                    }
+                }
                 // Remove the filtered comments
                 dbcontext.Posts.RemoveRange(posts);
 
