@@ -28,8 +28,9 @@ namespace PlantifyApp.Apis.Controllers
         private readonly IGenericRepository<Likes> likeRepo;
         private readonly IGenericRepository<Posts> postRepo;
         private readonly IGenericRepository<Contactus> contactusRepo;
+        private readonly IGenericRepository<Plants> plantRepo;
 
-        public DashboardController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, IMapper mapper, IGenericRepository<ApplicationUser> userRepo, IGenericRepository<Comments> commentRepo, IGenericRepository<Likes> likeRepo, IGenericRepository<Posts> postRepo, IGenericRepository<Contactus> contactusRepo)
+        public DashboardController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, IMapper mapper, IGenericRepository<ApplicationUser> userRepo, IGenericRepository<Comments> commentRepo, IGenericRepository<Likes> likeRepo, IGenericRepository<Posts> postRepo, IGenericRepository<Contactus> contactusRepo, IGenericRepository<Plants> plantRepo)
         {
             UserManager = userManager;
             this.roleManager = roleManager;
@@ -41,6 +42,7 @@ namespace PlantifyApp.Apis.Controllers
             this.likeRepo = likeRepo;
             this.postRepo = postRepo;
             this.contactusRepo = contactusRepo;
+            this.plantRepo = plantRepo;
         }
 
         public UserManager<ApplicationUser> UserManager { get; }
@@ -341,27 +343,28 @@ namespace PlantifyApp.Apis.Controllers
 
             }
             var currentRoles = await UserManager.GetRolesAsync(user);
-            var exitingrole = currentRoles.FirstOrDefault();
-            
-            if (!string.IsNullOrEmpty(role) && exitingrole.ToLower() !=user.Role.ToLower() )
+            var existingRole = currentRoles.FirstOrDefault();
+
+            if (!string.IsNullOrEmpty(role) && existingRole?.ToLower() != role.ToLower())
             {
                 user.Role = role;
-              await  UserManager.RemoveFromRoleAsync(user, exitingrole);
-                var resu = await UserManager.AddToRoleAsync(user, role);
+                await UserManager.RemoveFromRoleAsync(user, existingRole);
+                var result = await UserManager.AddToRoleAsync(user, role);
 
-                if (!resu.Succeeded)
+                if (!result.Succeeded)
                 {
-                    return BadRequest(new ApiErrorResponde(400, "Failed to update user Role."));
+                    return BadRequest(new ApiErrorResponde(400, "Failed to update user role."));
                 }
             }
-           
-            var result = await UserManager.UpdateAsync(user);
-            if (!result.Succeeded)
+
+            var updateResult = await UserManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
             {
                 return BadRequest(new ApiErrorResponde(400, "Failed to update user."));
             }
 
-          
+
+
 
             if (image != null && image.Length > 0)
             {
@@ -427,6 +430,7 @@ namespace PlantifyApp.Apis.Controllers
 
             await commentRepo.DeleteByUserIdAsync(id);
             await likeRepo.DeleteByUserIdAsync(id);
+            await plantRepo.DeleteByUserIdAsync(id);
             await postRepo.DeleteByUserIdAsync(id);
             
             var result = await UserManager.DeleteAsync(user);
@@ -609,6 +613,7 @@ namespace PlantifyApp.Apis.Controllers
             }
             await commentRepo.DeleteByUserIdAsync(id);
             await likeRepo.DeleteByUserIdAsync(id);
+            await plantRepo.DeleteByUserIdAsync(id);
             await postRepo.DeleteByUserIdAsync(id);
 
             var result = await UserManager.DeleteAsync(user);

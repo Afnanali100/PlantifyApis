@@ -245,6 +245,18 @@ namespace PlantifyApp.Repository.Repositories
                 // Save changes to the database
                 await dbcontext.SaveChangesAsync();
             }
+            else if(typeof(T) == typeof(Plants))
+            {
+                // Use Where to filter the comments by post_id
+                var plants = await dbcontext.Plants.Where(c => c.user_id == user_id).ToListAsync();
+
+                // Remove the filtered comments
+                dbcontext.Plants.RemoveRange(plants);
+
+                // Save changes to the database
+                await dbcontext.SaveChangesAsync();
+            }
+
             else
             {
                 // Handle other types or throw an exception if T is not supported
